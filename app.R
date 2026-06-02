@@ -78,16 +78,12 @@ powerr_header_css <- tags$head(tags$style(HTML(sprintf("
     letter-spacing: 0.2px;
   }
   .powerr-header-logo {
-    height: 42px; width: auto;
-    border-radius: 6px;
-    box-shadow: 0 0 0 2px rgba(255,255,255,0.18);
-    transition: transform 0.15s ease, box-shadow 0.15s ease;
-    background: #fff;
+    height: 44px; width: 44px;
+    object-fit: contain;
+    display: block;
+    transition: opacity 0.15s ease;
   }
-  .powerr-header-logo:hover {
-    transform: scale(1.03);
-    box-shadow: 0 0 0 2px rgba(255,255,255,0.35);
-  }
+  .powerr-header-logo:hover { opacity: 0.85; }
 ", BRAND_COLOR))))
 
 ui <- page_sidebar(
