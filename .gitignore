@@ -5,13 +5,18 @@
 .Ruserdata
 *.Rproj
 
-# Output / cache
+# Output / cache — generated screenshots and downloads
 *.pdf
 *.png
 *.csv
 *.rds
 powerR_*.csv
 powerR_*.png
+
+# But DO keep static assets shipped with the app (e.g. the logo).
+!www/*.png
+!www/*.svg
+!www/*.jpg
 
 # Editor / OS
 .DS_Store
