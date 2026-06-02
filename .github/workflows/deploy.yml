@@ -47,6 +47,7 @@ jobs:
           mkdir -p _app
           cp app.R _app/
           cp -r R _app/
+          cp -r www _app/
 
       - name: Export Shiny app to static site (shinylive)
         run: |

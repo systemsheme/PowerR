@@ -41,9 +41,60 @@ parse_numeric_vec <- function(txt) {
   out[!is.na(out)]
 }
 
+BRAND_COLOR <- "#9D4844"  # Asiri Lab muted-brick red, sampled from the logo
+
+powerr_header <- tags$div(
+  class = "powerr-header",
+  tags$span(
+    class = "powerr-header-title",
+    "PowerR — Simulation-based Power Analysis"
+  ),
+  tags$a(
+    href = "https://www.systemshematology.org",
+    target = "_blank", rel = "noopener",
+    title = "Asiri Lab — Systems Hematology",
+    `aria-label` = "Visit the Asiri Lab website",
+    tags$img(
+      src = "asiri-lab-logo.png",
+      alt = "Asiri Lab",
+      class = "powerr-header-logo"
+    )
+  )
+)
+
+powerr_header_css <- tags$head(tags$style(HTML(sprintf("
+  /* Brand header */
+  header.navbar, .navbar.navbar-static-top, .bslib-page-title,
+  .bslib-page-navbar, body > .navbar {
+    background-color: %s !important;
+    border-bottom: none !important;
+  }
+  .powerr-header {
+    display: flex; align-items: center; justify-content: space-between;
+    width: 100%%; gap: 16px;
+  }
+  .powerr-header-title {
+    color: #ffffff; font-weight: 600; font-size: 1.05em;
+    letter-spacing: 0.2px;
+  }
+  .powerr-header-logo {
+    height: 42px; width: auto;
+    border-radius: 6px;
+    box-shadow: 0 0 0 2px rgba(255,255,255,0.18);
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+    background: #fff;
+  }
+  .powerr-header-logo:hover {
+    transform: scale(1.03);
+    box-shadow: 0 0 0 2px rgba(255,255,255,0.35);
+  }
+", BRAND_COLOR))))
+
 ui <- page_sidebar(
-  title = "PowerR — Simulation-based Power Analysis",
+  title = powerr_header,
   theme = bs_theme(bootswatch = "flatly"),
+
+  powerr_header_css,
 
   sidebar = sidebar(
     width = 360,
