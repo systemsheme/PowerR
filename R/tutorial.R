@@ -36,6 +36,35 @@ tutorial_panel <- function() {
         " section."
       ),
 
+      shiny::div(class = "callout",
+        shiny::tags$strong("Do I need to install anything?"),
+        shiny::HTML(" <b>No.</b> If you are using the hosted version at"),
+        shiny::tags$code("systemsheme.github.io/PowerR"),
+        shiny::HTML(", PowerR runs entirely in your browser via"),
+        shiny::tags$a(href = "https://posit-dev.github.io/r-shinylive/",
+                      target = "_blank", "shinylive"),
+        shiny::HTML(" — a WebAssembly build of R. The first time you"),
+        " visit, your browser downloads R and the required packages",
+        " (shiny, bslib, ggplot2, survival; ~50–80 MB total) and caches",
+        " them, so subsequent visits start instantly. The simulations",
+        " then run on your own CPU inside the browser sandbox; nothing",
+        " you enter is sent to a server.",
+        shiny::tags$br(), shiny::tags$br(),
+        shiny::HTML("<b>Requirements:</b> a modern browser (Chrome, Firefox,"),
+        " Safari, or Edge from roughly the last three years) and a few",
+        " hundred MB of free RAM. Best on a laptop or desktop; mobile",
+        " works but the larger simulations are slow.",
+        shiny::tags$br(), shiny::tags$br(),
+        shiny::HTML("<b>Prefer native speed?</b> For very large simulations"),
+        " (LDA with 5,000+ Monte Carlo iterations, or a wide sample-size",
+        " sweep) running PowerR locally in a real R session is",
+        " substantially faster. See the ",
+        shiny::tags$a(href = "https://github.com/systemsheme/PowerR#installation",
+                      target = "_blank", "Installation section in the README"),
+        " for the four-line setup (install R, install four CRAN packages,",
+        " ", shiny::tags$code("shiny::runApp()"), ")."
+      ),
+
       # ------------------------------------------------------------
       shiny::h3("1. What is statistical power?"),
       shiny::p(
