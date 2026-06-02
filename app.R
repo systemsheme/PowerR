@@ -47,10 +47,11 @@ BRAND_FONT      <- "'Open Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif"
 
 powerr_header <- tags$div(
   class = "powerr-header",
-  # LEFT: this app's identity
-  tags$span(
-    class = "powerr-app-title",
-    "PowerR — Simulation-based Power Analysis"
+  # LEFT: PowerR wordmark image (replaces the previous text title)
+  tags$img(
+    src = "powerr-logo.png",
+    alt = "PowerR",
+    class = "powerr-app-logo"
   ),
   # RIGHT: lab brand — title then icon; one anchor to the lab site
   tags$a(
@@ -111,6 +112,11 @@ powerr_header_css <- tags$head(
       font-weight: 700;
       font-size: 1.05em;
       letter-spacing: 0.2px;
+    }
+    .powerr-app-logo {
+      height: 52px; width: auto;
+      display: block;
+      object-fit: contain;
     }
     @media (max-width: 700px) {
       .powerr-brand-title { display: none; }
