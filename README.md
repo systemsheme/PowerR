@@ -1,7 +1,16 @@
-# PowerR
+<p align="center">
+  <a href="https://www.systemshematology.org/PowerR/">
+    <img src="www/powerr-logo.png" alt="PowerR" width="420">
+  </a>
+</p>
 
-[![Deploy to GitHub Pages](https://github.com/systemsheme/PowerR/actions/workflows/deploy.yml/badge.svg)](https://github.com/systemsheme/PowerR/actions/workflows/deploy.yml)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+<p align="center">
+  <a href="https://github.com/systemsheme/PowerR/actions/workflows/deploy.yml"><img src="https://github.com/systemsheme/PowerR/actions/workflows/deploy.yml/badge.svg" alt="Deploy to GitHub Pages"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License: MIT"></a>
+  <a href="https://www.systemshematology.org/PowerR/"><img src="https://img.shields.io/badge/live%20app-systemshematology.org%2FPowerR-9D4844" alt="Live app"></a>
+</p>
+
+# PowerR
 
 **Simulation-based power analysis for experiment planning.**
 
