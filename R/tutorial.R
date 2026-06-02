@@ -12,6 +12,12 @@ tutorial_panel <- function() {
         background: #f6f8fa; border-left: 3px solid #1F77B4;
         padding: 8px 12px; font-family: ui-monospace, Menlo, monospace;
         margin: 8px 0; }
+      .powerr-tutorial pre.tut-code {
+        background: #0f172a; color: #e2e8f0;
+        padding: 12px 14px; border-radius: 6px;
+        font-family: ui-monospace, Menlo, Consolas, monospace;
+        font-size: 0.9em; line-height: 1.45;
+        overflow-x: auto; margin: 10px 0; white-space: pre; }
       .powerr-tutorial table { border-collapse: collapse; width: 100%;
         margin: 12px 0; }
       .powerr-tutorial th, .powerr-tutorial td {
@@ -58,11 +64,22 @@ tutorial_panel <- function() {
         shiny::HTML("<b>Prefer native speed?</b> For very large simulations"),
         " (LDA with 5,000+ Monte Carlo iterations, or a wide sample-size",
         " sweep) running PowerR locally in a real R session is",
-        " substantially faster. See the ",
-        shiny::tags$a(href = "https://github.com/systemsheme/PowerR#installation",
-                      target = "_blank", "Installation section in the README"),
-        " for the four-line setup (install R, install four CRAN packages,",
-        " ", shiny::tags$code("shiny::runApp()"), ")."
+        " substantially faster. From an R session:",
+        shiny::tags$pre(class = "tut-code", shiny::HTML(
+"# 1. Install R (https://cran.r-project.org/) and, optionally, RStudio
+
+# 2. From R, install the four CRAN packages PowerR depends on (one time):
+install.packages(c(\"shiny\", \"bslib\", \"ggplot2\", \"survival\"))
+
+# 3. Get the code. Either clone with git:
+#       git clone https://github.com/systemsheme/PowerR.git
+#    or download the ZIP from the repo's green 'Code' button and unzip it.
+
+# 4. Launch the app, pointing runApp at the PowerR folder:
+shiny::runApp(\"path/to/PowerR\")"
+        )),
+        "Same UI, same controls — just no WebAssembly overhead, and your",
+        " files stay where they are on your machine."
       ),
 
       # ------------------------------------------------------------
