@@ -1,0 +1,71 @@
+name: Deploy PowerR to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up R
+        uses: r-lib/actions/setup-r@v2
+        with:
+          r-version: '4.4'
+          use-public-rspm: true
+
+      - name: Install R package dependencies
+        uses: r-lib/actions/setup-r-dependencies@v2
+        with:
+          packages: |
+            any::shinylive
+            any::shiny
+            any::bslib
+            any::ggplot2
+            any::survival
+            any::scales
+
+      - name: Stage clean Shiny app directory
+        # shinylive::export copies the *entire* appdir, so we stage only the
+        # files that make up the Shiny app to avoid bundling the .Rmd,
+        # screenshots, .github/, etc.
+        run: |
+          mkdir -p _app
+          cp app.R _app/
+          cp -r R _app/
+
+      - name: Export Shiny app to static site (shinylive)
+        run: |
+          Rscript -e 'shinylive::export(appdir = "_app", destdir = "site")'
+
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

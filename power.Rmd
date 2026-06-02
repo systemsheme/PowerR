@@ -1,0 +1,232 @@
+---
+title: "K08resub_Power"
+date: "4/20/2020"
+output: pdf_document
+---
+
+###############################
+
+# References:
+[1] https://cran.r-project.org/web/packages/paramtest/vignettes/Simulating-Power.html
+
+[2] https://scientificallysound.org/2017/07/27/cohens-d-how-interpretation/
+
+###############################
+
+# Load Libraries
+
+```{r, warning=F, include = T, results=F, message=F}
+library('paramtest')
+library('pwr')
+library('ggplot2')
+library('knitr')
+library('nlme')
+library('lavaan')
+library('dplyr')
+```
+
+# Run Power Simulation
+
+I performed power simulations for each aim using the following method:
+
+1) Determine effect size for each comparison (cohen's D) which is essentially the number of SDs the two groups are from each other: (x_bar1 - x_bar2) / mean(sd1,sd2)
+2) Run multiple paired t-tests to determine the probability of obtaining a significant test (Power)
+
+
+```{r, include=T, message=F}
+
+# create function
+t_func = function(simNum, N, d) {
+  x1 = rnorm(N, 0, 1)
+  x2 = rnorm(N, d, 1)
+
+  t = t.test(x1,x2, var.equal = T)
+
+  stat = t$statistic
+  p = t$p.value
+
+  return(c(t=stat, p = p, sig = (p < 0.05)))
+
+}
+
+# varying N and Cohen's d
+power_ttest_vary2 <- grid_search(t_func, params=list(N=c(3,5,10,15,20,25), d=c(0.75,1, 1.5, 2,3)),
+                                 n.iter=500, output='data.frame')
+
+power <- results(power_ttest_vary2) %>%
+  group_by(N.test, d.test) %>%
+  summarise(power=mean(sig))
+
+# print(power)
+```
+
+```{r}
+
+ggplot(power, aes(x=N.test, y=power, group=factor(d.test), colour=factor(d.test))) +
+  geom_point() +
+  geom_line() +
+  ylim(c(0, 1)) +
+  labs(x='Sample Size', y='Power', colour="Cohen's d", title = "Relationship between Cohen's D and Power") +
+  geom_hline(yintercept = 0.8, color = 'blue') +
+  scale_x_continuous(breaks=seq(1,25,2)) +
+  theme_minimal()
+```
+
+
+![Aim 1: Reference](/Users/asiri/SynologyDrive/1cbio/grants/ravi.grants/Blaine_CART/image.png)
+
+# Aim 3.1
+
+For this analysis, I will want to determine the likelihood of detecting a statistically different prevalance of CD69+ HSCs in younger and holder human. Look at prevalence from HSC sort in BEM. 
+
+CD69+ HSCs in young donors (BEM experiment): 36/210000 (live lin - cells), 11/271000, 15/327994.
+Based on CD69+ HSPCs in MDS/AML, estimate (0.5 difference) 20x more cells in aging humans. 
+
+
+```{r}
+aml.comp <- readRDS('/Users/asiri/Documents/1Research/1Majeti/1projects/1LSC_Genotyping_Phenotyping/scMultiomics/experiments/wta_adt/wta_adt_combined3_H1_H3/HSCMPP_Precog_URD/Integrated_hscp.comp1_precog3_20210201v2.rds')
+
+df <- subset(aml.comp, subset = nmf19v2_ann_gmh == "PRECOG3High")
+p <- table(df$orig.ident)
+
+p
+mean(p)
+sd(p)
+quantile(p,c(0.40,0.60))
+```
+
+```{r, message=F, results=F, include=F}
+# cohen's d is the effect size
+# cohen's d = (X1bar - X2bar) / pooled SD
+# n is the sample size
+
+# Aim 1:
+x1 = mean(c(36/210000,11/271000,15/327994))
+x2 = 4*x1
+sd1 = sd(c(36/210000,11/271000,15/327994)) # estimate from the above graph
+sd2 = sd1 # estimate from the above graph
+
+d = (x1-x2)/(mean(sd1,sd2))
+
+# create function
+t_func = function(simNum, N, d) {
+  x1 = rnorm(N, 0, 1)
+  x2 = rnorm(N, d, 1)
+
+  t = t.test(x1,x2, var.equal = T)
+
+  stat = t$statistic
+  p = t$p.value
+
+  return(c(t=stat, p = p, sig = (p < 0.05/5)))
+
+}
+
+power_ttest_fixed <- grid_search(t_func, params=list(N=seq(2,20,1)),
+                                n.iter=500, output='data.frame', d=d)
+
+
+power <- results(power_ttest_fixed) %>%
+  group_by(N.test) %>%
+  summarise(power=mean(sig))
+
+
+ggplot(power, aes(x=N.test, y=power)) +
+  geom_point() +
+  geom_line() +
+  ylim(c(0, 1)) +
+  labs(x='Sample Size', y='Power', colour="Cohen's d", title = "Aim 1 Power Simulation") +
+  geom_hline(yintercept = 0.8, color = 'blue') +
+  scale_x_continuous(breaks=seq(1,25,2)) +
+  theme_minimal()
+  
+```
+```{r}
+power$N.test[which(power$power>0.8)]
+```
+
+```{r}
+
+pdf('power_aim3.1_diff-in-freq.pdf', height= 4, width = 6)
+ggplot(power, aes(x=N.test, y=power)) +
+  geom_point() +
+  geom_line() +
+  ylim(c(0, 1)) +
+  labs(x='Sample Size', y='Power', colour="Cohen's d", title = "Aim3.1, 18 needed for Power Simulation") +
+  geom_hline(yintercept = 0.8, color = 'blue') +
+  scale_x_continuous(breaks=seq(1,2000,200)) +
+  theme_minimal()
+dev.off()
+```
+
+# Aim 3.2: 
+
+How man samples do we need to determine a difference in balanced engraftment of 30% (B cell from Irv's paper: https://www.nature.com/articles/s41586-024-07238-x#MOESM3)
+
+```{r, include=T, message=F}
+# cohen's d is the effect size
+# cohen's d = (X1bar - X2bar) / pooled SD
+# n is the sample size
+
+# Aim 2:
+# x1 = 1.1 # hr 3
+x1 = 0.70 # hr 1.5
+x2 = .40 # Empty vehicle/naked mRNA
+sd1 = .10 # 
+sd2 = .10 # 
+
+d = (x1-x2)/(mean(sd1,sd2))
+
+# create function
+t_func = function(simNum, N, d) {
+  x1 = rnorm(N, 0, 1)
+  x2 = rnorm(N, d, 1)
+
+  t = t.test(x1,x2, var.equal = F)
+
+  stat = t$statistic
+  p = t$p.value
+
+  return(c(t=stat, p = p, sig = (p < .05/5)))
+
+}
+
+power_ttest_fixed <- grid_search(t_func, params=list(N=seq(2,20,1)),
+                                n.iter=500, output='data.frame', d=d)
+
+
+power <- results(power_ttest_fixed) %>%
+  group_by(N.test) %>%
+  summarise(power=mean(sig))
+
+```
+
+```{r}
+power$N.test[which(power$power>0.8)]
+```
+
+```{r}
+
+# pdf('power_hr1.41.pdf', height= 4, width = 6)
+ggplot(power, aes(x=N.test, y=power)) +
+  geom_point() +
+  geom_line() +
+  ylim(c(0, 1)) +
+  labs(x='Sample Size', y='Power', colour="Cohen's d", title = "Aim3.2 HR = 1.5, 400 needed Power Simulation") +
+  geom_hline(yintercept = 0.8, color = 'blue') +
+  scale_x_continuous(breaks=seq(1,25,2)) +
+  theme_minimal()
+# dev.off()
+
+```
+
+for HR of 3, will need 190 in test
+for HR of 1.5, will need 1250 in test
+
+
+# Conclusions
+
+- For Aim 1, you can use 3 mice in each group
+- For Aim 2, you should use 9 mice in each group
+
+

@@ -1,0 +1,23 @@
+Package: PowerR
+Title: Simulation-based Power Analysis for Experiment Planning
+Version: 0.1.0
+Authors@R:
+    person("Asiri", "Ediriwickrema", , "asiri.e@gmail.com",
+           role = c("aut", "cre"))
+Description: A Shiny application and supporting R functions for
+    simulation-based power analysis across common biomedical experiment
+    designs: t-tests (two-sample/paired/one-sample), two-proportion
+    tests, one-way ANOVA, log-rank survival, and limiting dilution
+    analysis (LDA) under a Poisson single-hit model.
+License: MIT + file LICENSE
+Encoding: UTF-8
+Imports:
+    shiny,
+    bslib,
+    ggplot2,
+    survival
+Suggests:
+    paramtest,
+    pwr,
+    knitr
+RoxygenNote: 7.3.1

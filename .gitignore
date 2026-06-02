@@ -1,0 +1,32 @@
+# R session / project files
+.Rproj.user/
+.Rhistory
+.RData
+.Ruserdata
+*.Rproj
+
+# Output / cache
+*.pdf
+*.png
+*.csv
+*.rds
+powerR_*.csv
+powerR_*.png
+
+# Editor / OS
+.DS_Store
+.idea/
+.vscode/
+.claude/
+
+# shinylive build artifacts (built in CI, not checked in)
+site/
+_app/
+
+# Renv (optional)
+renv/library/
+renv/python/
+renv/staging/
+
+# Packrat (legacy)
+packrat/lib*/
