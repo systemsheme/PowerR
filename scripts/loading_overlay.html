@@ -1,0 +1,99 @@
+<style>
+  #powerr-loading-overlay {
+    position: fixed; inset: 0; background: #ffffff; z-index: 99999;
+    display: flex; align-items: center; justify-content: center;
+    transition: opacity 0.45s ease;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+                 Helvetica, Arial, sans-serif;
+  }
+  #powerr-loading-overlay.fade-out { opacity: 0; pointer-events: none; }
+  #powerr-loading-overlay .powerr-loading-inner {
+    max-width: 540px; padding: 24px 28px; text-align: center;
+    color: #1f2937; line-height: 1.55;
+  }
+  #powerr-loading-overlay .powerr-spinner {
+    width: 42px; height: 42px;
+    border: 3px solid #e5e7eb; border-top-color: #1F77B4;
+    border-radius: 50%;
+    margin: 0 auto 14px;
+    animation: powerr-spin 0.9s linear infinite;
+  }
+  @keyframes powerr-spin { to { transform: rotate(360deg); } }
+  #powerr-loading-overlay h1 {
+    margin: 6px 0 12px; font-size: 1.55em; font-weight: 700;
+    color: #0f172a;
+  }
+  #powerr-loading-overlay p { margin: 8px 0; }
+  #powerr-loading-overlay .powerr-status {
+    margin-top: 16px; font-size: 0.92em; color: #4b5563;
+    background: #f3f4f6; padding: 8px 12px; border-radius: 6px;
+    display: inline-block;
+  }
+  #powerr-loading-overlay .powerr-tip {
+    margin-top: 18px; font-size: 0.88em; color: #6b7280;
+  }
+  #powerr-loading-overlay a {
+    color: #1F77B4; text-decoration: none; border-bottom: 1px dotted #1F77B4;
+  }
+</style>
+<div id="powerr-loading-overlay" role="status" aria-live="polite">
+  <div class="powerr-loading-inner">
+    <div class="powerr-spinner" aria-hidden="true"></div>
+    <h1>Loading PowerR…</h1>
+    <p>
+      <strong>First visit?</strong> Your browser is downloading R and the
+      packages PowerR needs (≈ 50&nbsp;MB total) so the simulations can run
+      entirely on your machine via WebAssembly.
+    </p>
+    <p>
+      This typically takes <strong>15–30 seconds</strong> on a fast
+      connection. Subsequent visits start almost instantly from your browser's
+      cache. Nothing you enter is sent to a server.
+    </p>
+    <div class="powerr-status" id="powerr-loading-status">
+      Initialising WebAssembly runtime and installing R packages…
+    </div>
+    <p class="powerr-tip">
+      Stuck for more than a minute? Check your network connection, or run
+      PowerR locally — see the <em>Tutorial</em> tab once the app loads.
+    </p>
+  </div>
+</div>
+<script>
+(function() {
+  var overlay = document.getElementById('powerr-loading-overlay');
+  if (!overlay) return;
+  var status  = document.getElementById('powerr-loading-status');
+  var phases  = [
+    "Initialising WebAssembly runtime and installing R packages…",
+    "Almost there — preparing the Shiny app…",
+    "Wrapping up final asset downloads…"
+  ];
+  var phase = 0;
+  var phaseTimer = setInterval(function() {
+    phase = (phase + 1) % phases.length;
+    if (status) status.textContent = phases[phase];
+  }, 8000);
+
+  var hidden = false;
+  function hide() {
+    if (hidden) return; hidden = true;
+    clearInterval(phaseTimer);
+    overlay.classList.add('fade-out');
+    setTimeout(function() {
+      if (overlay && overlay.parentNode) overlay.parentNode.removeChild(overlay);
+    }, 700);
+  }
+  // Hide as soon as a Shiny-rendered element appears.
+  var detector = new MutationObserver(function() {
+    if (document.querySelector(
+          '.shiny-bound-input, .shiny-bound-output, .bslib-page-sidebar, .nav-tabs')) {
+      hide();
+      detector.disconnect();
+    }
+  });
+  detector.observe(document.body, { childList: true, subtree: true });
+  // Safety timeout (max 120s).
+  setTimeout(hide, 120000);
+})();
+</script>

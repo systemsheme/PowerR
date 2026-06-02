@@ -37,6 +37,7 @@ jobs:
             any::ggplot2
             any::survival
             any::scales
+            any::svglite
 
       - name: Stage clean Shiny app directory
         # shinylive::export copies the *entire* appdir, so we stage only the
@@ -50,6 +51,19 @@ jobs:
       - name: Export Shiny app to static site (shinylive)
         run: |
           Rscript -e 'shinylive::export(appdir = "_app", destdir = "site")'
+
+      - name: Inject loading overlay into index.html
+        run: |
+          Rscript -e '
+            overlay <- paste(readLines("scripts/loading_overlay.html",
+                                       warn = FALSE), collapse = "\n")
+            idx <- "site/index.html"
+            html <- paste(readLines(idx, warn = FALSE), collapse = "\n")
+            html <- sub("(<body[^>]*>)",
+                        paste0("\\1\n", overlay), html, perl = TRUE)
+            writeLines(html, idx)
+            cat("Loading overlay injected into", idx, "\n")
+          '
 
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5

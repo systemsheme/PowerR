@@ -70,6 +70,11 @@ prism_theme <- function(base_size = 16) {
       plot.subtitle   = ggplot2::element_text(size = base_size * 0.95,
                                               hjust = 0.5,
                                               colour = "#444444"),
+      # Title/subtitle/caption position relative to the whole plot (including
+      # any side legend) rather than just the panel, so wide titles do not
+      # get clipped on the left when a right-side legend is present.
+      plot.title.position    = "plot",
+      plot.caption.position  = "plot",
       legend.text     = ggplot2::element_text(size = base_size * 0.9),
       legend.title    = ggplot2::element_text(face = "bold",
                                               size = base_size * 0.95),

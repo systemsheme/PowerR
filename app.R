@@ -229,7 +229,16 @@ ui <- page_sidebar(
       uiOutput("summary_box"),
       div(style = "overflow:auto; padding:8px 4px;",
           uiOutput("plotUI")),
-      downloadButton("dl_plot", "Download plot (PNG, 300 DPI)")
+      div(
+        style = "display:flex; gap:8px; flex-wrap:wrap; align-items:center;",
+        downloadButton("dl_png", "PNG (300 DPI)"),
+        downloadButton("dl_pdf", "PDF (vector)"),
+        downloadButton("dl_svg", "SVG (vector)"),
+        tags$small(
+          style = "color:#666; margin-left:8px;",
+          "PDF and SVG are vector — open in Illustrator, Inkscape, or Affinity for editing."
+        )
+      )
     ),
     nav_panel(
       "Results table",
@@ -452,26 +461,65 @@ server <- function(input, output, session) {
     }
   )
 
-  output$dl_plot <- downloadHandler(
-    filename = function() {
-      sprintf("powerR_%s_%s.png", input$experiment, Sys.Date())
-    },
-    content = function(file) {
-      df <- results()
-      ar <- aspect_ratio(input$plot_aspect)
-      h_in <- (as.integer(input$plot_height %||% 460)) / 96
-      w_in <- h_in * ar
-      g <- power_curve(df, target = input$target_power,
-                       title = NULL,
-                       group_lab = "Effect",
-                       base_size = as.integer(input$plot_font %||% 16),
-                       border_color = resolved_border(),
-                       x_label_angle = as.numeric(input$x_label_angle %||% 0),
-                       x_tick_mode = input$x_tick_mode %||% "auto")
-      ggplot2::ggsave(file, g,
-                      width = max(w_in, 4),
-                      height = max(h_in, 3),
-                      dpi = 300)
+  build_export_plot <- reactive({
+    df <- results()
+    req(df)
+    power_curve(df, target = input$target_power,
+                title = NULL,
+                group_lab = "Effect",
+                base_size = as.integer(input$plot_font %||% 16),
+                border_color = resolved_border(),
+                x_label_angle = as.numeric(input$x_label_angle %||% 0),
+                x_tick_mode = input$x_tick_mode %||% "auto")
+  })
+
+  plot_dims_in <- reactive({
+    ar <- aspect_ratio(input$plot_aspect)
+    h_in <- (as.integer(input$plot_height %||% 460)) / 96
+    list(w = max(h_in * ar, 4), h = max(h_in, 3))
+  })
+
+  dl_filename <- function(ext) {
+    function() sprintf("powerR_%s_%s.%s", input$experiment, Sys.Date(), ext)
+  }
+
+  output$dl_png <- downloadHandler(
+    filename = dl_filename("png"),
+    content  = function(file) {
+      d <- plot_dims_in()
+      ggplot2::ggsave(file, build_export_plot(),
+                      device = "png",
+                      width = d$w, height = d$h, dpi = 300)
+    }
+  )
+
+  output$dl_pdf <- downloadHandler(
+    filename = dl_filename("pdf"),
+    content  = function(file) {
+      d <- plot_dims_in()
+      # Use grDevices::pdf directly so we control useDingbats (improves
+      # downstream editability in Illustrator / Inkscape).
+      grDevices::pdf(file, width = d$w, height = d$h, useDingbats = FALSE)
+      print(build_export_plot())
+      grDevices::dev.off()
+    }
+  )
+
+  output$dl_svg <- downloadHandler(
+    filename = dl_filename("svg"),
+    content  = function(file) {
+      d <- plot_dims_in()
+      # Prefer svglite (cleaner text, smaller file) when available; otherwise
+      # fall back to base grDevices::svg so shinylive deploys without
+      # svglite still work.
+      if (requireNamespace("svglite", quietly = TRUE)) {
+        ggplot2::ggsave(file, build_export_plot(), device = "svg",
+                        width = d$w, height = d$h)
+      } else {
+        grDevices::svg(file, width = d$w, height = d$h)
+        print(build_export_plot())
+        grDevices::dev.off()
+      }
     }
   )
 

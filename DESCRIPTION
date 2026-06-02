@@ -19,5 +19,6 @@ Imports:
 Suggests:
     paramtest,
     pwr,
-    knitr
+    knitr,
+    svglite
 RoxygenNote: 7.3.1
