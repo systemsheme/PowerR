@@ -41,19 +41,25 @@ parse_numeric_vec <- function(txt) {
   out[!is.na(out)]
 }
 
-BRAND_COLOR <- "#9D4844"  # Asiri Lab muted-brick red, sampled from the logo
+BRAND_COLOR     <- "#9D4844"   # Asiri Lab brand (sampled from the logo)
+BRAND_TEXT_COL  <- "#FBFBFB"   # matches navbar-text-col on the lab Jekyll site
+BRAND_FONT      <- "'Open Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif"
 
 powerr_header <- tags$div(
   class = "powerr-header",
+  # LEFT: this app's identity
   tags$span(
-    class = "powerr-header-title",
+    class = "powerr-app-title",
     "PowerR — Simulation-based Power Analysis"
   ),
+  # RIGHT: lab brand — title then icon; one anchor to the lab site
   tags$a(
     href = "https://www.systemshematology.org",
     target = "_blank", rel = "noopener",
-    title = "Asiri Lab — Systems Hematology",
+    class = "powerr-brand",
     `aria-label` = "Visit the Asiri Lab website",
+    tags$span(class = "powerr-brand-title",
+              "Asiri Lab @ Stanford"),
     tags$img(
       src = "asiri-lab-logo.png",
       alt = "Asiri Lab",
@@ -62,29 +68,55 @@ powerr_header <- tags$div(
   )
 )
 
-powerr_header_css <- tags$head(tags$style(HTML(sprintf("
-  /* Brand header */
-  header.navbar, .navbar.navbar-static-top, .bslib-page-title,
-  .bslib-page-navbar, body > .navbar {
-    background-color: %s !important;
-    border-bottom: none !important;
-  }
-  .powerr-header {
-    display: flex; align-items: center; justify-content: space-between;
-    width: 100%%; gap: 16px;
-  }
-  .powerr-header-title {
-    color: #ffffff; font-weight: 600; font-size: 1.05em;
-    letter-spacing: 0.2px;
-  }
-  .powerr-header-logo {
-    height: 44px; width: 44px;
-    object-fit: contain;
-    display: block;
-    transition: opacity 0.15s ease;
-  }
-  .powerr-header-logo:hover { opacity: 0.85; }
-", BRAND_COLOR))))
+powerr_header_css <- tags$head(
+  # Open Sans matches the lab Jekyll site
+  tags$link(rel = "stylesheet",
+            href = "https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap"),
+  tags$style(HTML(sprintf("
+    /* Brand header */
+    header.navbar, .navbar.navbar-static-top, .bslib-page-title,
+    .bslib-page-navbar, body > .navbar {
+      background-color: %s !important;
+      border-bottom: none !important;
+      min-height: 64px !important;
+    }
+    .powerr-header {
+      display: flex; align-items: center; justify-content: space-between;
+      width: 100%%; gap: 24px;
+      font-family: %s;
+    }
+    .powerr-brand {
+      display: inline-flex; align-items: center; gap: 12px;
+      color: %s !important;
+      text-decoration: none;
+      transition: opacity 0.15s ease;
+    }
+    .powerr-brand:hover { opacity: 0.85; text-decoration: none; }
+    .powerr-header-logo {
+      height: 44px; width: 44px;
+      object-fit: contain;
+      display: block;
+      border-radius: 4px;
+      box-shadow: 0 0 0 1.5px rgba(255,255,255,0.55);
+    }
+    .powerr-brand-title {
+      color: %s;
+      font-weight: 700;
+      font-size: 1.05em;
+      letter-spacing: 0.2px;
+      white-space: nowrap;
+    }
+    .powerr-app-title {
+      color: %s;
+      font-weight: 700;
+      font-size: 1.05em;
+      letter-spacing: 0.2px;
+    }
+    @media (max-width: 700px) {
+      .powerr-brand-title { display: none; }
+    }
+  ", BRAND_COLOR, BRAND_FONT, BRAND_TEXT_COL, BRAND_TEXT_COL, BRAND_TEXT_COL)))
+)
 
 ui <- page_sidebar(
   title = powerr_header,
