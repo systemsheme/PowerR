@@ -12,11 +12,12 @@ power estimates reflect the test you actually plan to run.
 
 ## Try it live
 
-**[systemsheme.github.io/PowerR](https://systemsheme.github.io/PowerR/)** — runs
-entirely in your browser via [shinylive](https://posit-dev.github.io/r-shinylive/)
-(WebAssembly). First load takes ~15–30 seconds while R and the required packages
-download to your browser; thereafter it is fully interactive with no server
-round-trip. Nothing you enter leaves your machine.
+**[www.systemshematology.org/PowerR](https://www.systemshematology.org/PowerR/)** —
+runs entirely in your browser via
+[shinylive](https://posit-dev.github.io/r-shinylive/) (WebAssembly). First load
+takes ~15–30 seconds while R and the required packages download to your browser;
+thereafter it is fully interactive with no server round-trip. Nothing you enter
+leaves your machine.
 
 > For larger / faster simulations (LDA with 5,000+ iterations, very wide N
 > sweeps), running the app locally with native R will be substantially faster.

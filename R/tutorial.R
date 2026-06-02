@@ -45,7 +45,7 @@ tutorial_panel <- function() {
       shiny::div(class = "callout",
         shiny::tags$strong("Do I need to install anything?"),
         shiny::HTML(" <b>No.</b> If you are using the hosted version at"),
-        shiny::tags$code("systemsheme.github.io/PowerR"),
+        shiny::tags$code("www.systemshematology.org/PowerR"),
         shiny::HTML(", PowerR runs entirely in your browser via"),
         shiny::tags$a(href = "https://posit-dev.github.io/r-shinylive/",
                       target = "_blank", "shinylive"),
