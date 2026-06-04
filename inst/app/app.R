@@ -146,18 +146,6 @@ ui <- page_sidebar(
               value = "3, 5, 8, 10, 15, 20, 25, 30"),
 
     hr(),
-    selectInput(
-      "plot_aspect", "Plot aspect ratio",
-      choices = c(
-        "Wide 5:3 (Prism default)" = "wide_5_3",
-        "Wide 4:3"                 = "wide_4_3",
-        "Wide 16:9"                = "wide_16_9",
-        "Standard 3:2"             = "std_3_2",
-        "Square 1:1"               = "square",
-        "Portrait 3:4"             = "tall_3_4"
-      ),
-      selected = "wide_5_3"
-    ),
     sliderInput("plot_height", "Plot size (height, px)",
                 min = 300, max = 800, value = 460, step = 20),
     sliderInput("plot_font", "Axis / label font size (pt)",
@@ -303,6 +291,18 @@ ui <- page_sidebar(
     ),
 
     hr(),
+    selectInput(
+      "plot_aspect", "Plot aspect ratio",
+      choices = c(
+        "Wide 5:3 (Prism default)" = "wide_5_3",
+        "Wide 4:3"                 = "wide_4_3",
+        "Wide 16:9"                = "wide_16_9",
+        "Standard 3:2"             = "std_3_2",
+        "Square 1:1"               = "square",
+        "Portrait 3:4"             = "tall_3_4"
+      ),
+      selected = "wide_5_3"
+    ),
     actionButton("run", "Run power analysis", class = "btn-primary",
                  width = "100%"),
     helpText("Larger N ranges and iteration counts increase fidelity but slow the run.")
