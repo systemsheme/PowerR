@@ -90,7 +90,19 @@ PowerR::run_app()
         shiny::tags$code("git clone https://github.com/systemsheme/PowerR.git"),
         ", then from R run ",
         shiny::tags$code("shiny::runApp(\"PowerR/inst/app\")"),
-        " — useful if you want to edit the code while it runs."
+        " — useful if you want to edit the code while it runs.",
+        shiny::tags$br(), shiny::tags$br(),
+        shiny::HTML("<b>Don't want to touch R at all?</b> The repo also ships"),
+        " a small Python launcher that finds R on your computer, installs",
+        " PowerR if missing, and opens the app in your browser. Clone the",
+        " repo (above), then:",
+        shiny::tags$pre(class = "tut-code", shiny::HTML(
+"python3 powerr.py
+# Flags: --upgrade (reinstall latest), --port 4567 (pin a port),
+#        --no-browser (don't auto-open). Ctrl+C to stop."
+        )),
+        "Requires Python 3.8+ and an R install — no third-party Python",
+        " packages."
       ),
 
       # ------------------------------------------------------------
