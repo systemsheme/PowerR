@@ -35,3 +35,7 @@ renv/staging/
 
 # Packrat (legacy)
 packrat/lib*/
+
+# Python launcher byproducts
+__pycache__/
+*.pyc

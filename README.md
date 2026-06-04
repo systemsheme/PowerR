@@ -112,6 +112,40 @@ install.packages(c("shiny", "bslib", "ggplot2", "scales", "survival"))
 shiny::runApp("inst/app")
 ```
 
+### C. Python launcher
+
+If you'd rather not open R at all, `powerr.py` is a small Python script
+that finds R on your computer, installs `remotes` + PowerR if they're
+missing, starts the Shiny app, and opens it in your default browser.
+
+Requires Python ≥ 3.8 (pre-installed on macOS / Linux; on Windows from
+[python.org](https://www.python.org/downloads/)) and an R install. No
+third-party Python packages — standard library only.
+
+```sh
+# Get the script (clone the repo, or download just powerr.py):
+git clone https://github.com/systemsheme/PowerR.git
+cd PowerR
+
+# Run it — installs PowerR the first time, then launches the app:
+python3 powerr.py
+```
+
+The first run installs `remotes`, then PowerR + its dependencies into
+your R library (2–5 minutes), starts the Shiny server locally, and
+opens your default browser to `http://127.0.0.1:<random-port>/`.
+Subsequent runs skip the install step and start in a few seconds.
+
+Flags:
+
+| Flag | Purpose |
+| --- | --- |
+| `--upgrade` | Reinstall PowerR from GitHub to pick up the latest. |
+| `--port 4567` | Pin a specific port instead of picking one at random. |
+| `--no-browser` | Don't auto-open a browser tab. |
+
+`Ctrl + C` in the terminal stops the R subprocess and exits cleanly.
+
 ### Troubleshooting
 
 - **"could not find function `run_app`"** — the package didn't fully install.
