@@ -1,6 +1,6 @@
 <p align="center">
   <a href="https://www.systemshematology.org/PowerR/">
-    <img src="www/powerr-logo.png" alt="PowerR" width="420">
+    <img src="inst/app/www/powerr-logo.png" alt="PowerR" width="420">
   </a>
 </p>
 
@@ -69,35 +69,68 @@ whatever way fits the biology:
 
 ## Installation
 
+Two ways to run PowerR locally — the web portal at
+[www.systemshematology.org/PowerR](https://www.systemshematology.org/PowerR/)
+is always available too.
+
+### A. As an R package (recommended)
+
+PowerR is shipped as an R package. Install it once from GitHub, then launch
+the app with a single command. Requires R ≥ 4.2 (and optionally
+[RStudio](https://posit.co/download/rstudio-desktop/)).
+
 ```r
-# Required packages
-install.packages(c("shiny", "bslib", "ggplot2", "survival"))
+# 1. Install the helper package (one time):
+install.packages("remotes")
+
+# 2. Install PowerR from GitHub — this pulls every R dependency in one go:
+remotes::install_github("systemsheme/PowerR")
+
+# 3. Launch the app — your default browser opens to PowerR:
+PowerR::run_app()
+
+# Pick a specific port / suppress auto-open:
+# PowerR::run_app(port = 4567, launch.browser = FALSE)
 ```
 
-Clone and run:
+To upgrade later, re-run the same `remotes::install_github("systemsheme/PowerR")`
+in a fresh R session.
+
+### B. From a source clone (for development)
+
+Useful if you want to edit the code while it runs:
 
 ```bash
-git clone https://github.com/<your-user>/PowerR.git
+git clone https://github.com/systemsheme/PowerR.git
 cd PowerR
 ```
 
 ```r
-shiny::runApp(".")
+# Install runtime deps once:
+install.packages(c("shiny", "bslib", "ggplot2", "scales", "survival"))
+# Launch the bundled app directly:
+shiny::runApp("inst/app")
 ```
 
-Or, from any working directory:
+### Troubleshooting
 
-```r
-shiny::runApp("path/to/PowerR")
-```
+- **"could not find function `run_app`"** — the package didn't fully install.
+  Re-run `remotes::install_github("systemsheme/PowerR")` and watch for an
+  error near the end.
+- **"package 'xyz' had non-zero exit status"** during install — a CRAN
+  dependency failed to build. On macOS install the Xcode command-line tools
+  (`xcode-select --install`). On Windows install
+  [Rtools](https://cran.r-project.org/bin/windows/Rtools/). Then re-run.
+- **Port already in use** — pass another port: `PowerR::run_app(port = 4567)`.
 
 ## Using the underlying functions directly
 
-The simulation functions in `R/` can be called outside Shiny:
+The simulation functions live in `inst/app/R/` and can be called outside
+Shiny by sourcing them from a clone:
 
 ```r
-source("R/power_ttest.R")
-source("R/power_lda.R")
+source("inst/app/R/power_ttest.R")
+source("inst/app/R/power_lda.R")
 
 # T-test: how many mice per group to detect a Cohen's d of 1.0?
 power_ttest(test = "two_sample", n_range = 3:20, d = 1.0, n_iter = 1000)

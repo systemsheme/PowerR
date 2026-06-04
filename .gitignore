@@ -14,9 +14,9 @@ powerR_*.csv
 powerR_*.png
 
 # But DO keep static assets shipped with the app (e.g. the logo).
-!www/*.png
-!www/*.svg
-!www/*.jpg
+!inst/app/www/*.png
+!inst/app/www/*.svg
+!inst/app/www/*.jpg
 
 # Editor / OS
 .DS_Store

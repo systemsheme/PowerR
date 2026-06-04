@@ -64,22 +64,33 @@ tutorial_panel <- function() {
         shiny::HTML("<b>Prefer native speed?</b> For very large simulations"),
         " (LDA with 5,000+ Monte Carlo iterations, or a wide sample-size",
         " sweep) running PowerR locally in a real R session is",
-        " substantially faster. From an R session:",
+        " substantially faster. PowerR is shipped as an R package — install",
+        " once from GitHub, then launch with one command:",
         shiny::tags$pre(class = "tut-code", shiny::HTML(
-"# 1. Install R (https://cran.r-project.org/) and, optionally, RStudio
+"# 1. Install R 4.2+ (https://cran.r-project.org/) and, optionally, RStudio.
 
-# 2. From R, install the four CRAN packages PowerR depends on (one time):
-install.packages(c(\"shiny\", \"bslib\", \"ggplot2\", \"survival\"))
+# 2. Install the helper package (one time):
+install.packages(\"remotes\")
 
-# 3. Get the code. Either clone with git:
-#       git clone https://github.com/systemsheme/PowerR.git
-#    or download the ZIP from the repo's green 'Code' button and unzip it.
+# 3. Install PowerR from GitHub. This pulls every R dependency in one go:
+remotes::install_github(\"systemsheme/PowerR\")
 
-# 4. Launch the app, pointing runApp at the PowerR folder:
-shiny::runApp(\"path/to/PowerR\")"
+# 4. Launch the app — your default browser opens to PowerR:
+PowerR::run_app()
+# or pick a specific port / suppress auto-open:
+# PowerR::run_app(port = 4567, launch.browser = FALSE)"
         )),
         "Same UI, same controls — just no WebAssembly overhead, and your",
-        " files stay where they are on your machine."
+        " files stay where they are on your machine. To upgrade later, ",
+        " re-run the same ",
+        shiny::tags$code("remotes::install_github(\"systemsheme/PowerR\")"),
+        " in a fresh R session.",
+        shiny::tags$br(), shiny::tags$br(),
+        shiny::HTML("<b>Source install instead?</b> Clone the repo with "),
+        shiny::tags$code("git clone https://github.com/systemsheme/PowerR.git"),
+        ", then from R run ",
+        shiny::tags$code("shiny::runApp(\"PowerR/inst/app\")"),
+        " — useful if you want to edit the code while it runs."
       ),
 
       # ------------------------------------------------------------

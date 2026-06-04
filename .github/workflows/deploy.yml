@@ -42,12 +42,14 @@ jobs:
       - name: Stage clean Shiny app directory
         # shinylive::export copies the *entire* appdir, so we stage only the
         # files that make up the Shiny app to avoid bundling the .Rmd,
-        # screenshots, .github/, etc.
+        # screenshots, .github/, etc. The app sources live in inst/app/
+        # so the package install path (PowerR::run_app) and the web build
+        # share the same files.
         run: |
           mkdir -p _app
-          cp app.R _app/
-          cp -r R _app/
-          cp -r www _app/
+          cp inst/app/app.R _app/
+          cp -r inst/app/R _app/
+          cp -r inst/app/www _app/
 
       - name: Export Shiny app to static site (shinylive)
         run: |

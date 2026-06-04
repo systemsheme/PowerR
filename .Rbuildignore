@@ -1,0 +1,15 @@
+# Files / directories that should NOT be part of the built R package
+^README\.md$
+^README\.Rmd$
+^power\.Rmd$
+^\.github$
+^\.gitignore$
+^scripts$
+^_app$
+^site$
+^\.DS_Store$
+^\.vscode$
+^\.idea$
+^\.claude$
+^.*\.Rproj$
+^\.Rproj\.user$

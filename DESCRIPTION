@@ -15,10 +15,8 @@ Imports:
     shiny,
     bslib,
     ggplot2,
+    scales,
     survival
 Suggests:
-    paramtest,
-    pwr,
-    knitr,
     svglite
 RoxygenNote: 7.3.1
